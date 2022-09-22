@@ -4,16 +4,23 @@ import org.apache.ftpserver.DataConnectionConfiguration;
 import org.apache.ftpserver.DataConnectionConfigurationFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.impl.DefaultDataConnectionConfiguration;
-import org.apache.ftpserver.impl.DefaultFtpServer;
-import org.apache.ftpserver.impl.DefaultFtpServerContext;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.Listener;
 import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.usermanager.ClearTextPasswordEncryptor;
+import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
+import org.apache.ftpserver.usermanager.UserManagerFactory;
+import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.usermanager.impl.PropertiesUserManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.File;
+
 @Configuration
 public class FtpServerConfig {
+
 
     private final static int PORT = 10000;
     private final static String PASSIVE_PORT = "10001-10100";
@@ -23,9 +30,12 @@ public class FtpServerConfig {
      * {@link org.apache.ftpserver.impl.DefaultFtpServer}
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public FtpServer ftpServer() {
+    public FtpServer ftpServer() throws FtpException {
         FtpServerFactory serverFactory = new FtpServerFactory();
         serverFactory.addListener("foobar", this.listener());
+
+        serverFactory.setUserManager(this.ftpUserManager());
+
         return serverFactory.createServer();
     }
 
@@ -54,6 +64,7 @@ public class FtpServerConfig {
 
     /**
      * Listener : 클라이 언트 연결 및 처리 담당
+     * {@link org.apache.ftpserver.listener.nio.AbstractListener}
      */
     @Bean
     public Listener listener() {
@@ -64,6 +75,29 @@ public class FtpServerConfig {
         listenerFactory.setDataConnectionConfiguration( this.dataConnectionConfiguration() );
 
         return listenerFactory.createListener();
+    }
+
+    /**
+     * FTP User Manager
+     * {@link org.apache.ftpserver.usermanager.impl.AbstractUserManager}
+     * {@link org.apache.ftpserver.usermanager.impl.DbUserManager}
+     * {@link org.apache.ftpserver.usermanager.impl.PropertiesUserManager}
+     */
+    @Bean
+    public UserManager ftpUserManager() throws FtpException {
+
+        UserManager userManager = new PropertiesUserManager(new ClearTextPasswordEncryptor(), new File(""), "admin" );
+        // FTP User interface 의 기본 구현체
+        BaseUser baseUser = new BaseUser();
+        baseUser.setName("admin");
+        baseUser.setPassword("1234");
+        baseUser.setHomeDirectory("/");
+        baseUser.setEnabled(true);
+        
+        //UserManager를 통해 테스트용 User 추가
+        userManager.save(baseUser);
+        
+        return userManager;
     }
 
 
