@@ -26,8 +26,10 @@ dependencies {
 	implementation group: 'org.apache.mina', name: 'mina-core', version: '2.2.1'
 	implementation 'org.apache.ftpserver:ftpserver-core:1.2.0'
 	implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.2.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
