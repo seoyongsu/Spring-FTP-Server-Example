@@ -1,0 +1,11 @@
+version: "3"
+services:
+  spring-ftp-server:
+    image: spring-ftp-server-example
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "10000-10100:10000-10100"
+    # TODO 볼륨 설정 예정

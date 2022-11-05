@@ -17,6 +17,8 @@ import javax.persistence.EntityNotFoundException;
  */
 public class CustomUserManager implements UserManager {
 
+    private final static String ROOT_PATH = System.getProperty("user.dir")+"/ftpserver";
+
     private final JpaFtpUserRepository jpaFtpUserRepository;
 
     public CustomUserManager(JpaFtpUserRepository jpaFtpUserRepository) {
@@ -43,7 +45,7 @@ public class CustomUserManager implements UserManager {
 
     @Override
     public void save(User user)  {
-        FtpUsers ftpUsers = (FtpUsers) user;
+        FtpUsers ftpUsers = new FtpUsers(user.getName(), user.getPassword(), ROOT_PATH+user.getHomeDirectory());
         jpaFtpUserRepository.save(ftpUsers);
     }
 
