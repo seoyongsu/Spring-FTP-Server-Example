@@ -3,7 +3,7 @@ spring:
     name: Spring-FTP-Server-Example
 
   datasource:
-    url: jdbc:h2:mem:product
+    url: jdbc:h2:mem:ftp
     username: sa
     password:
 
