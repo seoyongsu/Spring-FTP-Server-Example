@@ -6,11 +6,14 @@ import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.Listener;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.UserManagerFactory;
+import org.example.ftp.handler.FtpLetHandler;
 import org.example.ftp.users.CustomUserManager;
 import org.example.ftp.users.FtpUsers;
 import org.example.ftp.users.JpaFtpUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 @Configuration
 public class FtpServerConfig {
@@ -25,13 +28,16 @@ public class FtpServerConfig {
      * {@link org.apache.ftpserver.impl.DefaultFtpServer}
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public FtpServer ftpServer(UserManager userManager) {
+    public FtpServer ftpServer(UserManager userManager, FtpLetHandler ftpLetHandler) {
         FtpServerFactory serverFactory = new FtpServerFactory();
         serverFactory.addListener("foobar", this.listener());
 
         serverFactory.setConnectionConfig(this.connectionConfig());
 
         serverFactory.setUserManager( userManager );
+
+        //FTP Let set
+        serverFactory.setFtplets(Map.of("exampleFtpLet", ftpLetHandler));
 
         return serverFactory.createServer();
     }
