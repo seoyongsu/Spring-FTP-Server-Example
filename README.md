@@ -20,7 +20,10 @@ UserManager : FTP User 관련 interface
 
 UserManagerFactory : UserManager 생성 관련 interface
 
-## build 환경
+## Application 실행 방법
 1. gradle build
-2. docker-compose up
+2. docker-compose up  또는 Spring boot 실행
 3. [fileZilla-Client](https://filezilla-project.org/) 통해서 접속 테스트 (admin/1234, test/1234)
+   - 접속포트는 10000
+   - admin/1234 (관리자 예제 계정)
+   - test/1234  (일반사용자 예제 계정)
